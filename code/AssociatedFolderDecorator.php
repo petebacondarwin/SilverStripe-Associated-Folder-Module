@@ -8,12 +8,12 @@
  *
  */
 class AssociatedFolderDecorator extends SiteTreeDecorator {
-    function extraDBFields() {
+    function extraStatics() {
         return array(
-			'has_one' => array(
-				'AssociatedFolder' => 'Folder'
-				)
-				);
+            'has_one' => array(
+                'AssociatedFolder' => 'Folder'
+                )
+            );        
     }
 
     /**
@@ -76,7 +76,7 @@ class AssociatedFolderDecorator extends SiteTreeDecorator {
             $parentFolder = $parent->AssociatedFolder();
             $parentFolderName = str_replace('assets/','',$parentFolder->FileName);
         } else {
-            $parentFolderName = $this->stat('defaultRootFolderName');
+            $parentFolderName = self::$defaultRootFolderName;
         }
         $associatedFolder = Folder::findOrMake($parentFolderName . '/' . $this->owner->URLSegment);
         $this->owner->AssociatedFolderID = $associatedFolder->ID;
@@ -113,7 +113,7 @@ class AssociatedFolderDecorator extends SiteTreeDecorator {
                     $folder->ParentId = $parent->AssociatedFolderID;
                 } else {
                     // Move the folder below the default root as its owner's parent is not folder associated
-                    $root = Folder::findOrMake($this->stat('defaultRootFolderName'));
+                    $root = Folder::findOrMake(self::$defaultRootFolderName);
                     $folder->ParentId = $root->ID;
                 }
             }
